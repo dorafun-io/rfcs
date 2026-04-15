@@ -1,0 +1,10 @@
+[default.extend-words]
+# 告诉拼写检查器，CANN 是合法的专有名词，绝对不是 CAN 的误拼
+CANN = "CANN"
+cann = "cann"
+
+# 防患于未然：顺手把咱们自己造的品牌词也加入白名单，防止未来被拦截
+dorafun = "dorafun"
+DoraFun = "DoraFun"
+LoopFun = "LoopFun"
+dop = "dop"

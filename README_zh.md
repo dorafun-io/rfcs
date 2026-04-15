@@ -28,6 +28,7 @@
 - 对 DoraFun 包管理流转、节点集市或部署流程的重大基础性新增。
 
 部分变更无需通过 RFC 流程：
+
 - 重新措辞、重组、重构或其他“改变形态但不改变含义”的工作。
 - 严格改善客观质量指标的新增内容（如性能提速、消除警告、增加平台测试覆盖率）。
 - 仅对核心开发者可见，但对 `dorafun-io` 最终用户不可见的微小错误修复或基础设施更新。
@@ -69,8 +70,8 @@
 ## 许可与贡献
 
 本仓库下的内容受以下任一协议许可：
-* Apache License, Version 2.0, ([LICENSE-APACHE](LICENSE-APACHE) or https://www.apache.org/licenses/LICENSE-2.0)
-* MIT license ([LICENSE-MIT](LICENSE-MIT) or https://opensource.org/licenses/MIT)
 
+- Apache License, Version 2.0 (<https://www.apache.org/licenses/LICENSE-2.0>)
+- MIT license (<https://opensource.org/licenses/MIT>)
 
 除非你有明确的额外声明，否则你提交的任何贡献将默认遵循上述双重许可协议，不附加其他条款或条件。
