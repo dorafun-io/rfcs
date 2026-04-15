@@ -1,0 +1,14 @@
+# 默认启用所有规则
+default: true
+
+# MD013: 禁用单行字数限制 (Line length)
+# 理由: 中英文混排及复杂的 Markdown 链接极易超过 80 字符，强制换行会破坏中文阅读体验
+MD013: false
+
+# MD024: 允许不同层级出现相同的标题内容 (Multiple headings with the same content)
+MD024:
+  siblings_only: true
+
+# MD033: 允许使用部分内联 HTML (Inline HTML)
+# 理由: 有时候需要使用 <kbd> 标签或表格来实现极客风格的排版
+MD033: false

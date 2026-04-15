@@ -1,0 +1,60 @@
+name: RFC Quality Control
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+    types:
+      - opened
+      - edited
+      - synchronize
+
+jobs:
+  # 1. 提交规范锁：Semantic PR Title Checker (仅在 PR 时运行)
+  semantic-pr-title:
+    name: Enforce Semantic PR Title
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    steps:
+      - uses: amannn/action-semantic-pull-request@v5
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          # 允许的提交类型，RFC 仓库最常用的是 docs 和 chore
+          types: |
+            docs
+            feat
+            fix
+            chore
+          # 允许的作用域 (Scope)
+          scopes: |
+            rfc
+            init
+            typo
+
+  # 2. 格式宪兵：Markdown Linter
+  markdown-lint:
+    name: Markdown Formatting Check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Run markdownlint
+        uses: DavidAnson/markdownlint-cli2-action@v16
+        with:
+          globs: "**/*.md"
+
+  # 3. 拼写审查：Typos Catcher
+  spell-check:
+    name: Code & Text Spell Check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Run Typos
+        uses: crate-ci/typos@master
