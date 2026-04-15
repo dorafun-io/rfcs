@@ -28,6 +28,7 @@ You need to follow this process if you intend to make "substantial" changes to `
 - Large architectural additions to the DoraFun package management and deployment flow.
 
 Some changes do not require an RFC:
+
 - Rephrasing, reorganizing, refactoring, or otherwise "changing shape that does not change meaning".
 - Additions that strictly improve objective, numerical quality criteria (speedup, warning removal, better platform coverage).
 - Minor bug fixes or platform infrastructure updates invisible to users-of-dorafun.
@@ -68,9 +69,9 @@ Every accepted RFC has an associated tracking issue in the relevant repository (
 
 ## License & Contributions
 
-This repository is currently in the process of being licensed under either of:
+This repository is licensed under either of:
 
-* Apache License, Version 2.0, ([LICENSE-APACHE](LICENSE-APACHE) or https://www.apache.org/licenses/LICENSE-2.0)
-* MIT license ([LICENSE-MIT](LICENSE-MIT) or https://opensource.org/licenses/MIT)
+- Apache License, Version 2.0 (<https://www.apache.org/licenses/LICENSE-2.0>)
+- MIT license (<https://opensource.org/licenses/MIT>)
 
 Unless you explicitly state otherwise, any contribution intentionally submitted for inclusion in the work by you shall be dual-licensed as above, without any additional terms or conditions.
