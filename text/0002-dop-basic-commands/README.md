@@ -29,6 +29,7 @@ Following the establishment of the `$DOP_HOME` sandboxing logic in RFC-0001, thi
 ### 3.1 Scaffold Array (创世阵列)
 
 #### 3.1.1 `dop init`
+
 - **Signature:** `dop init [--force]`
 - **Design Rationale (Why):** Embodied AI development is notoriously fragile due to global C++/Python library conflicts. `init` acts as the "Big Bang" for the deterministic `$DOP_HOME` sandbox, ensuring that `dop` never relies on the host OS's unpredictable global state.
 - **Implementation Logic (How):**
@@ -40,6 +41,7 @@ Following the establishment of the `$DOP_HOME` sandboxing logic in RFC-0001, thi
   - Directory already exists: Exit gracefully with code `0` unless `--force` is passed (Idempotency).
 
 #### 3.1.2 `dop new`
+
 - **Signature:** `dop new <project_name> [--template <registry/name>]`
 - **Design Rationale (Why):** Writing boilerplate `dataflow.yaml` and IPC shared-memory code is error-prone. We need a zero-friction Day 1 experience.
 - **Implementation Logic (How):**
@@ -50,6 +52,7 @@ Following the establishment of the `$DOP_HOME` sandboxing logic in RFC-0001, thi
 ### 3.2 Cloud & Metadata Array (云端阵列)
 
 #### 3.2.1 `dop login`
+
 - **Signature:** `dop login [--token <jwt>]`
 - **Design Rationale (Why):** Headless edge devices (e.g., Raspberry Pi, Jetson) cannot launch browsers. We mandate a Cargo-style personal access token (PAT) workflow for maximum CLI compatibility.
 - **Implementation Logic (How):**
@@ -58,10 +61,12 @@ Following the establishment of the `$DOP_HOME` sandboxing logic in RFC-0001, thi
   3. **Secure Storage:** If HTTP 200, write the token to `$DOP_HOME/config/credentials.toml`. **Critical:** Explicitly set OS file permissions to `0600` (read/write by owner only) to prevent privilege escalation leaks.
 
 #### 3.2.2 `dop logout`
+
 - **Signature:** `dop logout`
 - **Implementation Logic:** Perform a secure overwrite of `$DOP_HOME/config/credentials.toml` before unlinking the file, ensuring tokens cannot be recovered from disk sectors.
 
 #### 3.2.3 `dop config`
+
 - **Signature:** `dop config <get|set> <key> [value]`
 - **Design Rationale:** Users need a centralized way to mutate behavior without manually editing TOML files, which often leads to syntax errors.
 - **Implementation Logic (How):**
@@ -70,6 +75,7 @@ Following the establishment of the `$DOP_HOME` sandboxing logic in RFC-0001, thi
   3. **Mutation:** Modify the AST and flush to `$DOP_HOME/config/config.toml`.
 
 #### 3.2.4 `dop info`
+
 - **Signature:** `dop info [--json]`
 - **Design Rationale:** Provides immediate observability of the static project state before runtime execution. Crucial for debugging CI/CD pipelines.
 - **Implementation Logic:**
@@ -80,6 +86,7 @@ Following the establishment of the `$DOP_HOME` sandboxing logic in RFC-0001, thi
 ### 3.3 Lifecycle Array (生命周期)
 
 #### 3.3.1 `dop build`
+
 - **Signature:** `dop build [--release]`
 - **Design Rationale (Why):** Embodied AI projects are inherently polyglot. A single `dataflow.yaml` may define a C++ sensor driver, a Rust core router, and a Python neural network node. Asking developers to manually invoke `cmake`, `cargo`, and `uv` is an anti-pattern.
 - **Implementation Logic (How):**
@@ -90,6 +97,7 @@ Following the establishment of the `$DOP_HOME` sandboxing logic in RFC-0001, thi
   3. **Artifact Linking:** Symlink the compiled binaries into a `.dop/target/` directory local to the project workspace, maintaining a clean `git status` via the global `.gitignore`.
 
 #### 3.3.2 `dop run`
+
 - **Signature:** `dop run [node_id]`
 - **Design Rationale (Why):** The primary entry point for foreground debugging. It must guarantee absolute state reproducibility. If a robot crashes during `dop run`, we must know exactly what code was executing, even if it was uncommitted.
 - **Implementation Logic (How):**
@@ -101,6 +109,7 @@ Following the establishment of the `$DOP_HOME` sandboxing logic in RFC-0001, thi
   3. **Foreground Execution & IPC:** Launch the local Zenoh router (if required) and the specified nodes. Forward `stdout/stderr` directly to the terminal, color-coded by `node_id`. Block until `SIGINT` (Ctrl+C).
 
 #### 3.3.3 `dop start`
+
 - **Signature:** `dop start [node_id]`
 - **Design Rationale (Why):** Designed for headless edge devices (e.g., Jetson, Ascend CANN) and production deployments where processes must outlive the SSH session.
 - **Implementation Logic (How):**
@@ -110,6 +119,7 @@ Following the establishment of the `$DOP_HOME` sandboxing logic in RFC-0001, thi
   4. **State Tracking:** Write the master PID and node PIDs into `$DOP_HOME/run/<project_uuid>.pid`. Exits immediately with code `0`, returning control to the user.
 
 #### 3.3.4 `dop stop`
+
 - **Signature:** `dop stop [node_id] [--force]`
 - **Design Rationale (Why):** Embodied AI nodes often hold exclusive locks on physical hardware (e.g., `/dev/video0` or CAN bus interfaces). Hard-killing them leaves hardware in a zombie state. We must enforce a graceful teardown contract.
 - **Implementation Logic (How):**
@@ -121,6 +131,7 @@ Following the establishment of the `$DOP_HOME` sandboxing logic in RFC-0001, thi
 ### 3.4 Ops & Observability Array (运维阵列)
 
 #### 3.4.1 `dop status`
+
 - **Signature:** `dop status`
 - **Design Rationale (Why):** In Embodied AI, CPU/GPU spikes or Zero-copy IPC bottlenecks directly translate to physical latency (e.g., a robot arm reacting 200ms too late). Developers need a real-time, terminal-native dashboard without spinning up heavy web servers.
 - **Implementation Logic (How):**
@@ -131,6 +142,7 @@ Following the establishment of the `$DOP_HOME` sandboxing logic in RFC-0001, thi
   3. **Visual Cues:** Highlight nodes in RED if their message queue backpressure exceeds a threshold (e.g., dropping frames from a 60FPS camera node).
 
 #### 3.4.2 `dop logs`
+
 - **Signature:** `dop logs [node_id] [-f/--follow]`
 - **Design Rationale (Why):** Raw `stdout` from polyglot nodes is a chaotic wall of text. We need structured, queryable logs.
 - **Implementation Logic (How):**
@@ -139,6 +151,7 @@ Following the establishment of the `$DOP_HOME` sandboxing logic in RFC-0001, thi
   3. **Tailing:** If `-f` is passed, use a file-system watcher (e.g., `notify` crate) to stream new lines instantly.
 
 #### 3.4.3 `dop doctor`
+
 - **Signature:** `dop doctor`
 - **Design Rationale (Why):** Hardware and OS misconfigurations account for 80% of Day-1 failures. `dop doctor` acts as the definitive environmental sanity check.
 - **Implementation Logic (How):**
@@ -148,6 +161,7 @@ Following the establishment of the `$DOP_HOME` sandboxing logic in RFC-0001, thi
   4. **Output:** Print a checklist with `[PASS]`, `[WARN]`, and `[FAIL]`, providing copy-pasteable remediation commands (e.g., `sudo usermod -aG video $USER`).
 
 #### 3.4.4 `dop shell`
+
 - **Signature:** `dop shell`
 - **Design Rationale:** Sometimes developers need to run raw `python` or `cargo` commands inside the exact environment that `dop run` uses to debug tricky dependency issues.
 - **Implementation Logic:**
@@ -156,6 +170,7 @@ Following the establishment of the `$DOP_HOME` sandboxing logic in RFC-0001, thi
   3. Modify the shell prompt (`$PS1`) to prefix `(dop) ` so the user knows they are inside the sandbox.
 
 #### 3.4.5 `dop clean`
+
 - **Signature:** `dop clean [--all]`
 - **Design Rationale (Why):** Embodied AI accumulates massive artifacts: compiled C++ binaries, cached HuggingFace models, and our own `gitoxide` shadow commits. Aggressive garbage collection is required.
 - **Implementation Logic (How):**
@@ -165,12 +180,12 @@ Following the establishment of the `$DOP_HOME` sandboxing logic in RFC-0001, thi
      - **Shadow Commit Pruning (Crucial):** Call `gitoxide` to find all `refs/tags/dop/*` tags older than 30 days. Delete the tags and run a git garbage collection (`git gc`) to purge the unreferenced blob/tree objects from `.git/objects`, freeing up disk space.
 
 #### 3.4.6 `dop self-update`
+
 - **Signature:** `dop self-update`
 - **Implementation Logic:**
   1. Fetch the latest release manifest from the DoraFun CDN.
   2. Download the new `dop` binary to a temporary file (`dop.tmp`).
   3. Perform an **atomic rename** (`std::fs::rename` in Rust). Overwriting the currently running binary directly will cause an OS text-file-busy error (ETXTBSY). Atomic renaming sidesteps this, ensuring the CLI is never bricked even during a power loss.
-
 
 ## 4. Trade-offs & Technical Debt
 
